@@ -4747,17 +4747,25 @@ void MySQL_Session::MySQL_Stmt_Result_to_MySQL_wire(MYSQL_STMT *stmt, MySQL_Conn
 void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *MyRS, MySQL_Data_Stream *_myds) {
         if (mysql == NULL) {
                 // error
+                proxy_error("Knallst du hier %d\n", 4750);
                 client_myds->myprot.generate_pkt_ERR(true,NULL,NULL,client_myds->pkt_sid+1, 2013, (char *)"HY000" ,(char *)"Lost connection to MySQL server during query");
                 return;
         }
 	if (MyRS) {
+                proxy_error("Knallst du hier %d\n", 4755);
 		assert(MyRS->result);
+                proxy_error("Knallst du hier %d\n", 4757);
 		bool transfer_started=MyRS->transfer_started;
 		bool resultset_completed=MyRS->get_resultset(client_myds->PSarrayOUT);
+                proxy_error("Knallst du hier %d\n", 4760);
 		assert(resultset_completed); // the resultset should always be completed if MySQL_Result_to_MySQL_wire is called
+                proxy_error("Knallst du hier %d\n", 4762);
 		if (transfer_started==false) { // we have all the resultset when MySQL_Result_to_MySQL_wire was called
+                        proxy_error("Knallst du hier %d\n", 4764);
 			if (qpo && qpo->cache_ttl>0) { // the resultset should be cached
+                                proxy_error("Knallst du hier %d\n", 4766);
 				if (mysql_errno(mysql)==0) { // no errors
+                                        proxy_error("Knallst du hier %d\n", 4768);
 					if (
 						(qpo->cache_empty_result==1)
 						|| (
@@ -4766,10 +4774,14 @@ void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *My
 							(thread->variables.query_cache_stores_empty_result || MyRS->num_rows)
 						)
 					) {
+                                                proxy_error("Knallst du hier %d\n", 4777);
 						client_myds->resultset->copy_add(client_myds->PSarrayOUT,0,client_myds->PSarrayOUT->len);
 						client_myds->resultset_length=MyRS->resultset_size;
+                                                proxy_error("Knallst du hier %d\n", 4780);
 						unsigned char *aa=client_myds->resultset2buffer(false);
+                                                proxy_error("Knallst du hier %d\n", 4782);
 						while (client_myds->resultset->len) client_myds->resultset->remove_index(client_myds->resultset->len-1,NULL);
+                                                proxy_error("Knallst du hier %d\n", 4784);
 						GloQC->set(
 							client_myds->myconn->userinfo->hash ,
 							(const unsigned char *)CurrentQuery.QueryPointer,
@@ -4780,15 +4792,23 @@ void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *My
 							thread->curtime/1000 ,
 							thread->curtime/1000 + qpo->cache_ttl
 						);
+                                                proxy_error("Knallst du hier %d\n", 4795);
 						l_free(client_myds->resultset_length,aa);
+                                                proxy_error("Knallst du hier %d\n", 4797);
 						client_myds->resultset_length=0;
 					}
+                                        proxy_error("Knallst du hier %d\n", 4800);
 				}
+                                proxy_error("Knallst du hier %d\n", 4802);
 			}
+                        proxy_error("Knallst du hier %d\n", 4804);
 		}
+                proxy_error("Knallst du hier %d\n", 4806);
 	} else { // no result set
+                proxy_error("Knallst du hier %d\n", 4808);
 		int myerrno=mysql_errno(mysql);
 		if (myerrno==0) {
+                        proxy_error("Knallst du hier %d\n", 4811);
 			unsigned int num_rows = mysql_affected_rows(mysql);
 			unsigned int nTrx=NumActiveTransactions();
 			uint16_t setStatus = (nTrx ? SERVER_STATUS_IN_TRANS : 0 );
@@ -4800,21 +4820,28 @@ void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *My
 			client_myds->myprot.generate_pkt_OK(true,NULL,NULL,client_myds->pkt_sid+1,num_rows,mysql->insert_id, setStatus, mysql->warning_count,mysql->info);
 			client_myds->pkt_sid++;
 		} else {
+                        proxy_error("Knallst du hier %d\n", 4823);
 			// error
 			char sqlstate[10];
 			sprintf(sqlstate,"%s",mysql_sqlstate(mysql));
 			if (_myds && _myds->killed_at) { // see case #750
 				if (_myds->kill_type == 0) {
 					client_myds->myprot.generate_pkt_ERR(true,NULL,NULL,client_myds->pkt_sid+1,1907,sqlstate,(char *)"Query execution was interrupted, query_timeout exceeded");
+                                        proxy_error("Knallst du hier %d\n", 4830);
 				} else {
 					client_myds->myprot.generate_pkt_ERR(true,NULL,NULL,client_myds->pkt_sid+1,1317,sqlstate,(char *)"Query execution was interrupted");
+                                        proxy_error("Knallst du hier %d\n", 4833);
 				}
 			} else {
 				client_myds->myprot.generate_pkt_ERR(true,NULL,NULL,client_myds->pkt_sid+1,mysql_errno(mysql),sqlstate,mysql_error(mysql));
+                                proxy_error("Knallst du hier %d\n", 4837);
 			}
 			client_myds->pkt_sid++;
+                        proxy_error("Knallst du hier %d\n", 4840);
 		}
+                proxy_error("Knallst du hier %d\n", 4842);
 	}
+        proxy_error("Knallst du hier %d\n", 4844);
 }
 
 void MySQL_Session::SQLite3_to_MySQL(SQLite3_result *result, char *error, int affected_rows, MySQL_Protocol *myprot) {
