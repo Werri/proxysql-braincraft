@@ -4762,6 +4762,14 @@ void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *My
                 proxy_error("Knallst du hier %d\n", 4762);
 		if (transfer_started==false) { // we have all the resultset when MySQL_Result_to_MySQL_wire was called
                         proxy_error("Knallst du hier %d\n", 4764);
+                        if(qpo) {
+                           proxy_error("QPO IS NOT NULL %d\n", 4766);
+                           proxy_error("qpo->cache_ttl: %d\n", qpo->cache_ttl);
+                           proxy_error("if qpo->cache_ttl == 0 is it very shit! %d\n", 4768);
+                        } else {
+                           proxy_error("QPO IS NULL!!!!!!!! %d\n", 4768);
+                        }
+
 			if (qpo && qpo->cache_ttl>0) { // the resultset should be cached
                                 proxy_error("Knallst du hier %d\n", 4766);
 				if (mysql_errno(mysql)==0) { // no errors
