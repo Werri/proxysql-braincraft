@@ -2312,11 +2312,18 @@ void MySQL_ResultSet::add_err(MySQL_Data_Stream *_myds) {
 
 bool MySQL_ResultSet::get_resultset(PtrSizeArray *PSarrayFinal) {
 	transfer_started=true;
+        proxy_error("[ERROR] PSarrayFinal %d\n", PSarrayFinal == NULL ? 0 : 1);
+        proxy_error("[ERROR] myprot = %d\n", myprot ? 1 : 0);
 	if (myprot) {
+                proxy_error("[ERROR] PSarrayOUT %d\n", ((unsigned long long int)&PSarrayOUT) == NULL ? 0 : 1);
+                proxy_error("[ERROR] PSarrayOUT.len %d\n", PSarrayOUT.len);
 		PSarrayFinal->copy_add(&PSarrayOUT,0,PSarrayOUT.len);
-		while (PSarrayOUT.len)
+		while (PSarrayOUT.len) {
+                        proxy_error("[ERROR] PSarrayOUT.len %d\n", PSarrayOUT.len);
 			PSarrayOUT.remove_index(PSarrayOUT.len-1,NULL);
+                }
 	}
+        proxy_error("[ERROR] resultset_completed: %d\n", resultset_completed ? 1 : 0);
 	return resultset_completed;
 }
 

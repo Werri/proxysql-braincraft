@@ -3096,6 +3096,7 @@ handler_again:
 						(endt.tv_sec*1000000000+endt.tv_nsec) -
 						(begint.tv_sec*1000000000+begint.tv_nsec);
 				}
+                                proxy_error("[ERROR] rc %d, line %d\n",rc,3099);
 				if (rc==0) {
 					myconn->get_gtid(mybe->gtid_uuid,&mybe->gtid_trxid);
 					// check if multiplexing needs to be disabled
@@ -3484,6 +3485,7 @@ handler_again:
 							}
 						}
 					} else {
+                                                proxy_error("[ERROR] rc = %d, line %d\n", rc,3488);
 						switch (rc) {
 							// rc==1 , query is still running
 							// start sending to frontend if mysql_thread___threshold_resultset_size is reached
@@ -4837,9 +4839,6 @@ void MySQL_Session::MySQL_Result_to_MySQL_wire(MYSQL *mysql, MySQL_ResultSet *My
                 proxy_error("Knallst du hier %d\n", 4755);
 		assert(MyRS->result);
                 //assert(MyRS->resultset_size > (unsigned int) mysql_thread___threshold_resultset_size);
-                if (MyRS->resultset_size > 100) {
-                    MyRS->resultset_size = 56;
-                }
                 proxy_error("MyRS->resultset_size %d\n", MyRS->resultset_size);
                 MyRS->get_resultset(client_myds->PSarrayOUT);
                 proxy_error("Knallst du hier %d\n", 4757);
