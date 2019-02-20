@@ -1,4 +1,4 @@
-
+#include <bits/syscall.h>
 /*
 #ifdef DEBUG
 #ifndef DEBUG_EXTERN
@@ -14,19 +14,47 @@ extern int gdbg;
 #define PROXY_TRACE()
 #endif
 
+
 #ifdef DEBUG
 #ifdef SYS_gettid
-#define proxy_debug(module, verbosity, fmt, ...) \
-	do { if (GloVars.global.gdbg) { \
+//#define proxy_debug(module, verbosity, fmt, ...) \
+	/*do { if (GloVars.global.gdbg) { \
 	proxy_debug_func(module, verbosity, syscall(SYS_gettid), __FILE__, __LINE__, __func__ ,  fmt,  ## __VA_ARGS__); \
-	} } while (0)
+	} } while (0)*/
+#define proxy_debug(module, verbosity, fmt, ...) \
+        do { \
+                time_t __timer; \
+                char __buffer[30]; \
+                struct tm __tm_info; \
+                time(&__timer); \
+                localtime_r(&__timer, &__tm_info); \
+                strftime(__buffer, 25, "%Y-%m-%d %H:%M:%S", &__tm_info); \
+                proxy_error_func("%s %s:%d:%s(): [DEBUG] " fmt, __buffer, __FILE__, __LINE__, __func__ , ## __VA_ARGS__); \
+        } while(0)
 #else
-#define proxy_debug(module, verbosity, fmt, ...)
+#define proxy_debug(module, verbosity, fmt, ...) \
+          do { \
+                time_t __timer; \
+                char __buffer[30]; \
+                struct tm __tm_info; \
+                time(&__timer); \
+                localtime_r(&__timer, &__tm_info); \
+                strftime(__buffer, 25, "%Y-%m-%d %H:%M:%S", &__tm_info); \
+                proxy_error_func("%s %s:%d:%s(): [DEBUG] " fmt, __buffer, __FILE__, __LINE__, __func__ , ## __VA_ARGS__); \
+        } while(0)
 #endif /* SYS_gettid */
 #else
-#define proxy_debug(module, verbosity, fmt, ...)
+#define proxy_debug(module, verbosity, fmt, ...) \
+         do { \
+                time_t __timer; \
+                char __buffer[30]; \
+                struct tm __tm_info; \
+                time(&__timer); \
+                localtime_r(&__timer, &__tm_info); \
+                strftime(__buffer, 25, "%Y-%m-%d %H:%M:%S", &__tm_info); \
+                proxy_error_func("%s %s:%d:%s(): [DEBUG] " fmt, __buffer, __FILE__, __LINE__, __func__ , ## __VA_ARGS__); \
+        } while(0)
 #endif /* DEBUG */
-
 /*
 #ifdef DEBUG
 */
