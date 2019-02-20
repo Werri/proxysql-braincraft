@@ -3494,10 +3494,13 @@ handler_again:
 								break;
 							// rc==2 : a multi-resultset (or multi statement) was detected, and the current statement is completed
 							case 2:
-								MySQL_Result_to_MySQL_wire(myconn->mysql, myconn->MyRS);
+								//MySQL_Result_to_MySQL_wire(myconn->mysql, myconn->MyRS);
                                                                 proxy_error("OMG LOL %d\n", 3426);
-								  if (myconn->MyRS) { // we also need to clear MyRS, so that the next staement will recreate it if needed
-									        proxy_error("OMG LOL %d\n", 3428);
+								  if (myconn->MyRS) {
+                                                                                if(myconn->MyRS->result && myconn->MyRS->resultset_size > (unsigned int) mysql_thread___threshold_resultset_size) { // we also need to clear MyRS, so that the next staement will recreate it if needed
+                                                                                   myconn->MyRS->get_resultset(client_myds->PSarrayOUT);
+                                                                                }
+                                                                                proxy_error("OMG LOL %d\n", 3428);
                                                                              	if (myconn->MyRS_reuse) {
 											delete myconn->MyRS_reuse;
                                                                                         proxy_error("OMG LOL %d\n", 3431);
@@ -3507,7 +3510,9 @@ handler_again:
 										myconn->MyRS_reuse = myconn->MyRS;
                                                                                 proxy_error("OMG LOL %d\n", 3436);
 										myconn->MyRS=NULL;
-									}
+									} else {
+                                                                                MySQL_Result_to_MySQL_wire(myconn->mysql, myconn->MyRS);
+                                                                        }
                                                                         proxy_error("goto handler_again dirty solution %d\n", 3439);
 									NEXT_IMMEDIATE(PROCESSING_QUERY);
 								break;
